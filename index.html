@@ -233,8 +233,8 @@ input[type="range"]::-moz-range-thumb {
   </div>
 
   <div class="chart-card">
-    <h3>Monthly Revenue, Cost &amp; Net per Free User</h3>
-    <div class="chart-sub">$0 revenue during free phase. Post-conversion: upsell% x retained x paid economics.</div>
+    <h3>Monthly Revenue, Cost &amp; Net per Retained User</h3>
+    <div class="chart-sub">Free phase: $0 rev, entitlement COGS only. Post-conversion: full paid user economics.</div>
     <canvas id="chartRevCost"></canvas>
   </div>
 
@@ -349,27 +349,37 @@ function runModel(p) {
     }
   }
 
-  // Month-by-month expected economics for ONE free user
-  var rev = [];
-  var cost = [];
-  var net = [];
+  // Chart 1 data: per RETAINED user (not probability-weighted)
+  // Free phase: $0 revenue, freeCogs cost
+  // Post-conversion: full paid ARPU and COGS for one retained user
+  var chartRev = [];
+  var chartCost = [];
+  var chartNet = [];
 
   for (var m = 0; m < HORIZON; m++) {
     if (m < p.ttc) {
-      // FREE PHASE: $0 revenue, freeCogs cost
-      rev.push(0);
-      cost.push(freeCogs);
-      net.push(-freeCogs);
+      chartRev.push(0);
+      chartCost.push(freeCogs);
+      chartNet.push(-freeCogs);
     } else {
-      // POST-CONVERSION: only converted users remain, no more free entitlement cost
+      var k = m - p.ttc;
+      var ec = paidEcon(k);
+      chartRev.push(ec.arpu);
+      chartCost.push(ec.cost);
+      chartNet.push(ec.margin);
+    }
+  }
+
+  // Expected economics per free user (for cumulative LTV calc)
+  var expNet = [];
+  for (var m = 0; m < HORIZON; m++) {
+    if (m < p.ttc) {
+      expNet.push(-freeCogs);
+    } else {
       var k = m - p.ttc;
       var ec = paidEcon(k);
       var surv = retention[k];
-      var expectedRev = p.upsell * surv * ec.arpu;
-      var expectedCost = p.upsell * surv * ec.cost;
-      rev.push(expectedRev);
-      cost.push(expectedCost);
-      net.push(expectedRev - expectedCost);
+      expNet.push(p.upsell * surv * ec.margin - freeCogs);
     }
   }
 
@@ -396,11 +406,11 @@ function runModel(p) {
     ltvConv += retention[k] * paidEcon(k).margin / Math.pow(monthlyDiscount, p.ttc + k);
   }
 
-  // Cumulative NPV
+  // Cumulative NPV (expected, probability-weighted)
   var cumLtv = [];
-  cumLtv.push(net[0] / Math.pow(monthlyDiscount, 0));
+  cumLtv.push(expNet[0] / Math.pow(monthlyDiscount, 0));
   for (var m = 1; m < HORIZON; m++) {
-    cumLtv.push(cumLtv[m - 1] + net[m] / Math.pow(monthlyDiscount, m));
+    cumLtv.push(cumLtv[m - 1] + expNet[m] / Math.pow(monthlyDiscount, m));
   }
 
   // Cohort chart: 100% during free, then upsell% * retention
@@ -429,9 +439,9 @@ function runModel(p) {
     breakEven: breakEven,
     totalProfit: cumLtv[HORIZON - 1],
     retention: retention,
-    rev: rev,
-    cost: cost,
-    net: net,
+    chartRev: chartRev,
+    chartCost: chartCost,
+    chartNet: chartNet,
     cumLtv: cumLtv,
     cohort: cohort,
   };
@@ -522,9 +532,9 @@ function updateCharts(r, p) {
   for (var i = 1; i <= HORIZON; i++) { months.push(i); }
 
   chartRevCost.data.labels = months;
-  chartRevCost.data.datasets[0].data = r.rev;
-  chartRevCost.data.datasets[1].data = r.cost.map(function(v) { return -v; });
-  chartRevCost.data.datasets[2].data = r.net;
+  chartRevCost.data.datasets[0].data = r.chartRev;
+  chartRevCost.data.datasets[1].data = r.chartCost.map(function(v) { return -v; });
+  chartRevCost.data.datasets[2].data = r.chartNet;
   chartRevCost.update();
 
   chartCohort.data.labels = months;
