@@ -452,15 +452,14 @@ function updateUI(r,p){
 
   const ins=[];
   const r12=r.ret.length>11?r.ret[11]:0, r36=r.ret.length>35?r.ret[35]:0;
+  const totalFreeCost=p.ttc*r.freeCogs;
   if(r.netLtv<0) ins.push('The free tier loses $'+f2(Math.abs(r.netLtv))+' per user over 5 years. '+p.ttc+' months of free COGS at $'+f2(r.freeCogs)+'/mo ($'+f2(totalFreeCost)+' total) isn\'t recovered by the '+f2(p.up*100)+'% who convert. <strong>Upsell rate</strong> and <strong>time to convert</strong> are the biggest levers.');
   else if(r.ratio<3) ins.push('Marginal at '+f2(r.ratio)+'x. The '+p.ttc+'-month free runway costs $'+f2(r.cacPV)+' (PV) per user. Shortening time-to-convert or boosting upsell above '+f2(p.up*100*1.5)+'% would strengthen the case.');
   else ins.push('Strong at '+f2(r.ratio)+'x. '+f2(p.up*100)+'% upsell at month '+p.ttc+' generates $'+f2(r.ltvPV)+' in paid profit against $'+f2(r.cacPV)+' in free COGS.');
 
   ins.push('Free users cost $'+f2(r.freeCogs)+'/mo ('+f0(p.used*100)+'% of $'+f2(p.ent)+' entitlement) with $0 revenue for '+p.ttc+' months. Post-conversion, '+f0(Math.round(r12*100))+'% of converters survive to month 12, '+f0(Math.round(r36*100))+'% to month 36.');
 
-  const yr5m=r.ret.length>0?paid(r.ret.length-1).margin:r.margin;
-  function paid(k){const or=Math.min(p.ovr*Math.pow(Math.pow(1+p.ovg,1/12),k),0.95),oa=p.ova*Math.pow(Math.pow(1+p.ovg,1/12),k);let a=0,mg=0;const s=[[p.pm*(1-or),p.pp],[p.pm*or,p.pp+oa],[p.ppm*(1-or),p.ppp],[p.ppm*or,p.ppp+oa]];for(const[w,sp]of s){a+=w*sp;mg+=w*(1-p.cogs)*sp;}return{margin:p.brk*a+(1-p.brk)*mg};}
-  if(p.ovg>0) ins.push('Overage growth ('+f0(p.ovg*100)+'%/yr) lifts paid margin from $'+f2(r.margin)+'/mo at conversion to $'+f2(yr5m.margin)+'/mo by end of horizon. Deeper free-tier engagement primes this flywheel.');
+  if(p.ovg>0) ins.push('Overage growth ('+f0(p.ovg*100)+'%/yr) lifts paid margin over time. Deeper free-tier engagement primes the overage flywheel post-conversion.');
   else ins.push('No overage growth. Margin stays flat at $'+f2(r.margin)+'/mo.');
 
   $('insUl').innerHTML=ins.map(t=>'<li style="margin-bottom:4px">'+t+'</li>').join('');
