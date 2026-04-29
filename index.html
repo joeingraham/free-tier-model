@@ -175,8 +175,8 @@ input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;b
   </div>
 
   <div class="chart-card">
-    <h3>Monthly Revenue, Cost &amp; Net per User</h3>
-    <div class="chart-sub">Free phase: near-zero revenue, COGS = entitlement usage. Post-conversion: paid unit economics.</div>
+    <h3>Monthly Revenue, Cost &amp; Net per Free User</h3>
+    <div class="chart-sub">Expected value: $0 revenue during free phase, then upsell% &times; paid economics post-conversion</div>
     <canvas id="c1"></canvas>
   </div>
 
@@ -360,8 +360,9 @@ function runModel(p){
     cacPV, eLtv, netLtv, ltvCac, ltvConv, breakEven,
     totalProfit: cumLtv[HORIZON-1],
     paidRet:    Array.from(paidRet),
-    retRevMo:   Array.from(retRevMo),
-    retCostMo:  Array.from(retCostMo),
+    revMo:      Array.from(revMo),
+    costMo:     Array.from(costMo),
+    netMo:      Array.from(netMo),
     retNetMo:   Array.from(retNetMo),
     cohortPct:  Array.from(cohortPct),
     cumLtv:     Array.from(cumLtv),
@@ -436,9 +437,9 @@ function updateCharts(r,p){
   const mo = Array.from({length:HORIZON},(_,i)=>i+1);
 
   ch1.data.labels = mo;
-  ch1.data.datasets[0].data = r.retRevMo;
-  ch1.data.datasets[1].data = r.retCostMo.map(v=>-v);
-  ch1.data.datasets[2].data = r.retNetMo;
+  ch1.data.datasets[0].data = r.revMo;
+  ch1.data.datasets[1].data = r.costMo.map(v=>-v);
+  ch1.data.datasets[2].data = r.netMo;
   ch1.update();
 
   const postMo = Array.from({length:r.paidRet.length},(_,i)=>i+1);
