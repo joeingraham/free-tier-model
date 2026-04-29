@@ -452,7 +452,6 @@ function updateUI(r,p){
 
   const ins=[];
   const r12=r.ret.length>11?r.ret[11]:0, r36=r.ret.length>35?r.ret[35]:0;
-  const totalFreeCost=p.ttc*r.freeCogs;
   if(r.netLtv<0) ins.push('The free tier loses $'+f2(Math.abs(r.netLtv))+' per user over 5 years. '+p.ttc+' months of free COGS at $'+f2(r.freeCogs)+'/mo ($'+f2(totalFreeCost)+' total) isn\'t recovered by the '+f2(p.up*100)+'% who convert. <strong>Upsell rate</strong> and <strong>time to convert</strong> are the biggest levers.');
   else if(r.ratio<3) ins.push('Marginal at '+f2(r.ratio)+'x. The '+p.ttc+'-month free runway costs $'+f2(r.cacPV)+' (PV) per user. Shortening time-to-convert or boosting upsell above '+f2(p.up*100*1.5)+'% would strengthen the case.');
   else ins.push('Strong at '+f2(r.ratio)+'x. '+f2(p.up*100)+'% upsell at month '+p.ttc+' generates $'+f2(r.ltvPV)+' in paid profit against $'+f2(r.cacPV)+' in free COGS.');
