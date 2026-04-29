@@ -25,24 +25,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,san
 .ctl label{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:4px}
 .ctl .v{font-weight:700;color:var(--text);font-size:12px;min-width:52px;text-align:right;background:var(--card);padding:2px 6px;border-radius:4px;font-variant-numeric:tabular-nums}
 input[type="range"]{-webkit-appearance:none;width:100%;height:4px;background:var(--border);border-radius:2px;outline:none;margin-top:2px}
-input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--blue);cursor:pointer;transition:transform .1s}
-input[type="range"]::-webkit-slider-thumb:hover{transform:scale(1.2)}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--blue);cursor:pointer}
 input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--blue);cursor:pointer;border:none}
 .hint{font-size:10px;color:var(--muted);margin-top:-6px;margin-bottom:8px}
 .readout{background:rgba(73,204,249,0.06);border:1px solid rgba(73,204,249,0.18);border-radius:8px;padding:10px 12px;margin-top:14px}
-.readout-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:3px 0}
-.readout-row .rl{color:var(--muted)}
-.readout-row .rv{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.rr{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:3px 0}
+.rr .rl{color:var(--muted)}
+.rr .rv{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
 .main{padding:20px 28px;overflow-y:auto;max-height:calc(100vh - 58px)}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
 .kpi .kl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px}
 .kpi .kv{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums}
 .kpi .ks{font-size:10px;color:var(--muted);margin-top:3px}
-.chart-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:14px}
-.chart-card h3{font-size:12px;font-weight:600;margin-bottom:4px}
-.chart-card .chart-sub{font-size:10px;color:var(--muted);margin-bottom:10px}
-.chart-card canvas{width:100%!important;height:220px!important}
+.cc{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px;margin-bottom:14px}
+.cc h3{font-size:12px;font-weight:600;margin-bottom:4px}
+.cc .cs{font-size:10px;color:var(--muted);margin-bottom:10px}
+.cc canvas{width:100%!important;height:220px!important}
 .dtl{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:6px}
 .dtl h3{font-size:12px;font-weight:600;margin-bottom:10px}
 .dtl table{width:100%;border-collapse:collapse;font-size:12px}
@@ -51,25 +50,18 @@ input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;b
 .dtl td:last-child{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
 .dtl tr:hover{background:rgba(73,204,249,0.04)}
 .sep td{padding:1px;background:var(--border)}
-@media(max-width:900px){
-  .app{grid-template-columns:1fr}
-  .sidebar{max-height:none;border-right:none;border-bottom:1px solid var(--border)}
-  .kpis{grid-template-columns:1fr}
-}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{max-height:none;border-right:none;border-bottom:1px solid var(--border)}.kpis{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <div class="header">
   <h1>Free Tier Model</h1>
   <div class="sub">Per-user unit economics &mdash; Copilot Free &rarr; paid conversion</div>
 </div>
-
 <div class="app">
-
 <div class="sidebar">
 
-  <div class="sec">Free Tier Cost</div>
+  <div class="sec">Free Tier</div>
   <div class="ctl">
     <label>Free Entitlement <span class="v" id="dEnt">$5.00/mo</span></label>
     <input type="range" id="entitlement" min="1" max="15" step="0.5" value="5">
@@ -79,23 +71,20 @@ input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;b
     <label>% Used of Entitlement <span class="v" id="dUsed">60%</span></label>
     <input type="range" id="pctUsed" min="5" max="100" step="5" value="60">
   </div>
-  <div class="hint">Actual usage &rarr; this is their COGS</div>
+  <div class="hint">Their actual usage = free COGS per month</div>
   <div class="ctl">
-    <label>WACC <span class="v" id="dWacc">10%</span></label>
-    <input type="range" id="wacc" min="0" max="20" step="0.5" value="10">
-  </div>
-
-  <div class="sec">Conversion</div>
-  <div class="ctl">
-    <label>Avg Time to Convert <span class="v" id="dTTC">10 mo</span></label>
+    <label>Months to Convert <span class="v" id="dTTC">10 mo</span></label>
     <input type="range" id="ttc" min="1" max="36" step="1" value="10">
   </div>
-  <div class="hint">Average months on free before converting</div>
   <div class="ctl">
-    <label>Upsell Rate <span class="v" id="dUpsell">5%</span></label>
-    <input type="range" id="upsellRate" min="1" max="40" step="0.5" value="5">
+    <label>Upsell Rate <span class="v" id="dUp">5%</span></label>
+    <input type="range" id="upsell" min="1" max="40" step="0.5" value="5">
   </div>
-  <div class="hint">% of free users who convert at that point</div>
+  <div class="hint">% of free users who convert at that month</div>
+  <div class="ctl">
+    <label>WACC <span class="v" id="dW">10%</span></label>
+    <input type="range" id="wacc" min="0" max="20" step="0.5" value="10">
+  </div>
 
   <div class="sec">Post-Conversion</div>
   <div class="ctl">
@@ -127,7 +116,7 @@ input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;b
     <input type="range" id="breakage" min="0" max="40" step="1" value="10">
   </div>
   <div class="ctl">
-    <label>Avg COGS % of Revenue <span class="v" id="dCogsPct">50%</span></label>
+    <label>Avg COGS % of Revenue <span class="v" id="dCp">50%</span></label>
     <input type="range" id="cogsPct" min="10" max="90" step="1" value="50">
   </div>
   <div class="hint">For active paid users (non-breakage)</div>
@@ -141,465 +130,362 @@ input[type="range"]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;b
   </div>
 
   <div class="readout">
-    <div class="readout-row"><span class="rl">Free COGS / Mo</span><span class="rv" id="rFreeCogs">&mdash;</span></div>
-    <div class="readout-row"><span class="rl">Paid ARPU</span><span class="rv" id="rArpu">&mdash;</span></div>
-    <div class="readout-row"><span class="rl">Paid Margin / Mo</span><span class="rv" id="rMargin">&mdash;</span></div>
+    <div class="rr"><span class="rl">Free COGS / Mo</span><span class="rv" id="rFC">--</span></div>
+    <div class="rr"><span class="rl">Paid ARPU</span><span class="rv" id="rA">--</span></div>
+    <div class="rr"><span class="rl">Paid Margin / Mo</span><span class="rv" id="rM">--</span></div>
   </div>
-
 </div>
 
-<!-- Dashboard -->
 <div class="main">
-
   <div class="kpis">
-    <div class="kpi">
-      <div class="kl">LTV per User</div>
-      <div class="kv" id="kLtv">&mdash;</div>
-      <div class="ks" id="kLtvS"></div>
-    </div>
-    <div class="kpi">
-      <div class="kl">CAC per User</div>
-      <div class="kv" id="kCac">&mdash;</div>
-      <div class="ks" id="kCacS"></div>
-    </div>
-    <div class="kpi">
-      <div class="kl">LTV : CAC</div>
-      <div class="kv" id="kR">&mdash;</div>
-      <div class="ks" id="kRS"></div>
-    </div>
+    <div class="kpi"><div class="kl">LTV per User</div><div class="kv" id="kL">--</div><div class="ks" id="kLS"></div></div>
+    <div class="kpi"><div class="kl">CAC per User</div><div class="kv" id="kC">--</div><div class="ks" id="kCS"></div></div>
+    <div class="kpi"><div class="kl">LTV : CAC</div><div class="kv" id="kR">--</div><div class="ks" id="kRS"></div></div>
   </div>
 
-  <div id="insights" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:14px">
+  <div id="ins" style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:14px">
     <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Key Takeaways</h3>
-    <ul id="insightsList" style="font-size:12px;color:var(--muted);padding-left:18px;line-height:1.8"></ul>
+    <ul id="insUl" style="font-size:12px;color:var(--muted);padding-left:18px;line-height:1.8"></ul>
   </div>
 
-  <div class="chart-card">
+  <div class="cc">
     <h3>Monthly Revenue, Cost &amp; Net per Free User</h3>
-    <div class="chart-sub">Expected value: $0 revenue during free phase, then upsell% &times; paid economics post-conversion</div>
+    <div class="cs">$0 revenue during free phase. Post-conversion: upsell% &times; retained &times; paid economics.</div>
     <canvas id="c1"></canvas>
   </div>
-
-  <div class="chart-card">
+  <div class="cc">
     <h3>Expected Users Converted &amp; Retained</h3>
-    <div class="chart-sub">100% on free until conversion month, then drops to upsell %, then paid retention decay</div>
-    <canvas id="c4"></canvas>
-  </div>
-
-  <div class="chart-card">
-    <h3>Retention Curve (Post-Conversion)</h3>
-    <div class="chart-sub">% of converted users still active each month after converting</div>
+    <div class="cs">100% on free until conversion month, drops to upsell %, then paid retention decay</div>
     <canvas id="c2"></canvas>
   </div>
-
-  <div class="chart-card">
-    <h3>Cumulative LTV per Free User</h3>
-    <div class="chart-sub">Expected cumulative profit per free user, discounted at WACC</div>
+  <div class="cc">
+    <h3>Post-Conversion Retention</h3>
+    <div class="cs">% of converted users still active each month after converting</div>
     <canvas id="c3"></canvas>
   </div>
-
-  <div class="chart-card">
+  <div class="cc">
+    <h3>Cumulative LTV per Free User</h3>
+    <div class="cs">Running NPV: free COGS drag then paid profit, discounted at WACC</div>
+    <canvas id="c4"></canvas>
+  </div>
+  <div class="cc">
     <h3>Sensitivity &#8212; LTV : CAC</h3>
-    <div class="chart-sub">&plusmn;50% swing on each lever vs. current assumptions</div>
+    <div class="cs">&plusmn;50% swing on each lever vs. current assumptions</div>
     <canvas id="c5" style="height:160px!important"></canvas>
-    <div id="tornadoNotes" style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.7"></div>
+    <div id="tNotes" style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.7"></div>
   </div>
 
   <div class="dtl">
     <h3>Per-User Breakdown</h3>
-    <table><thead><tr><th>Metric</th><th>Value</th></tr></thead>
-    <tbody id="tBody"></tbody></table>
+    <table><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody id="tB"></tbody></table>
   </div>
-
 </div>
 </div>
 
 <script>
-const $ = id => document.getElementById(id);
-const f0 = n => n.toLocaleString('en-US',{maximumFractionDigits:0});
-const f2 = n => n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const $=id=>document.getElementById(id);
+const f0=n=>n.toLocaleString('en-US',{maximumFractionDigits:0});
+const f2=n=>n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const HORIZON=60;
 
-const HORIZON = 60;
-
-function readInputs(){
-  const pm = +$('proMix').value/100;
+function inputs(){
+  const pm=+$('proMix').value/100;
   return {
-    entitlement: +$('entitlement').value,
-    pctUsed:     +$('pctUsed').value/100,
-    wacc:        +$('wacc').value/100,
-    ttc:         +$('ttc').value,
-    upsell:      +$('upsellRate').value/100,
-    proPrice:    +$('proPrice').value,
-    ppPrice:     +$('ppPrice').value,
-    proMix:      pm,
-    ppMix:       1-pm,
-    ovRate:      +$('ovRate').value/100,
-    ovAmt:       +$('ovAmt').value,
-    ovGrowth:    +$('ovGrowth').value/100,
-    breakage:    +$('breakage').value/100,
-    cogsPct:     +$('cogsPct').value/100,
-    eChurn:      +$('eChurn').value/100,
-    sChurn:      +$('sChurn').value/100,
+    ent:+$('entitlement').value, used:+$('pctUsed').value/100,
+    ttc:+$('ttc').value, up:+$('upsell').value/100, wacc:+$('wacc').value/100,
+    pp:+$('proPrice').value, ppp:+$('ppPrice').value, pm:pm, ppm:1-pm,
+    ovr:+$('ovRate').value/100, ova:+$('ovAmt').value, ovg:+$('ovGrowth').value/100,
+    brk:+$('breakage').value/100, cogs:+$('cogsPct').value/100,
+    ec:+$('eChurn').value/100, sc:+$('sChurn').value/100,
   };
 }
 
-// ── Model ────────────────────────────────────────────────────────────────
-function runModel(p){
-  const monthlyOvGrowth = Math.pow(1 + p.ovGrowth, 1/12);
-  const monthlyDiscount = Math.pow(1 + p.wacc, 1/12);
-  const freeCogsMo = p.entitlement * p.pctUsed;
+function model(p){
+  // ────────────────────────────────────────────────────────────────────────
+  // STEP 1: Free COGS per month
+  // ────────────────────────────────────────────────────────────────────────
+  const freeCogs = p.ent * p.used;
 
-  // Post-conversion economics at month k after conversion
-  function econAt(k){
-    const ovR = Math.min(p.ovRate * Math.pow(monthlyOvGrowth, k), 0.95);
-    const ovA = p.ovAmt * Math.pow(monthlyOvGrowth, k);
-    const segs = [
-      {w: p.proMix*(1-ovR), spend: p.proPrice},
-      {w: p.proMix*ovR,     spend: p.proPrice + ovA},
-      {w: p.ppMix*(1-ovR),  spend: p.ppPrice},
-      {w: p.ppMix*ovR,      spend: p.ppPrice + ovA},
-    ];
-    let arpu=0, marginActive=0;
-    for(const s of segs){
-      arpu         += s.w * s.spend;
-      marginActive += s.w * (1 - p.cogsPct) * s.spend;
+  // ────────────────────────────────────────────────────────────────────────
+  // STEP 2: Paid user economics at month k after conversion
+  //   ARPU and margin grow over time as overage deepens
+  // ────────────────────────────────────────────────────────────────────────
+  const moOvG = Math.pow(1+p.ovg,1/12);
+  function paid(k){
+    const or=Math.min(p.ovr*Math.pow(moOvG,k),0.95);
+    const oa=p.ova*Math.pow(moOvG,k);
+    let arpu=0,marg=0;
+    const s=[[p.pm*(1-or),p.pp],[p.pm*or,p.pp+oa],[p.ppm*(1-or),p.ppp],[p.ppm*or,p.ppp+oa]];
+    for(const[w,sp]of s){ arpu+=w*sp; marg+=w*(1-p.cogs)*sp; }
+    const margin=p.brk*arpu+(1-p.brk)*marg;
+    return {arpu, margin, cost:arpu-margin};
+  }
+  const p0=paid(0);
+
+  // ────────────────────────────────────────────────────────────────────────
+  // STEP 3: Post-conversion retention curve
+  //   Starts at 100% at month of conversion, decays from there
+  // ────────────────────────────────────────────────────────────────────────
+  const postMo=Math.max(HORIZON-p.ttc,0);
+  const ret=new Float64Array(postMo);
+  if(postMo>0){
+    ret[0]=1;
+    for(let k=1;k<postMo;k++) ret[k]=ret[k-1]*(1-(k<=3?p.ec:p.sc));
+  }
+
+  // ────────────────────────────────────────────────────────────────────────
+  // STEP 4: Month-by-month economics for ONE free user (expected value)
+  //
+  //   Month 0 .. ttc-1  :  FREE PHASE
+  //     - revenue = $0
+  //     - cost    = freeCogs
+  //     - net     = -freeCogs
+  //
+  //   Month ttc .. 59    :  POST-CONVERSION
+  //     k = months since conversion = m - ttc
+  //     Converted track (prob = upsell%):
+  //       revenue = ret[k] * ARPU(k)
+  //       cost    = ret[k] * paidCOGS(k)
+  //     Non-converted track (prob = 1 - upsell%):
+  //       revenue = $0
+  //       cost    = freeCogs  (they stay on free forever, no churn)
+  //
+  //     Expected revenue = up * ret[k] * ARPU(k)
+  //     Expected cost    = up * ret[k] * paidCOGS(k) + (1-up) * freeCogs
+  //     Expected net     = rev - cost
+  // ────────────────────────────────────────────────────────────────────────
+  const rev=new Float64Array(HORIZON);
+  const cost=new Float64Array(HORIZON);
+  const net=new Float64Array(HORIZON);
+
+  for(let m=0;m<HORIZON;m++){
+    if(m<p.ttc){
+      // FREE PHASE: zero revenue, just COGS
+      rev[m]=0;
+      cost[m]=freeCogs;
+      net[m]=-freeCogs;
+    } else {
+      // POST-CONVERSION PHASE
+      const k=m-p.ttc;
+      const pk=paid(k);
+      const surviving=ret[k]; // fraction of converters still active
+      rev[m] = p.up * surviving * pk.arpu;
+      cost[m]= p.up * surviving * pk.cost + (1-p.up) * freeCogs;
+      net[m] = rev[m] - cost[m];
     }
-    const margin = p.breakage * arpu + (1 - p.breakage) * marginActive;
-    return {arpu, margin, cost: arpu - margin};
   }
 
-  const e0 = econAt(0);
-
-  // Paid retention curve (post-conversion)
-  const maxPaidMonths = HORIZON - p.ttc;
-  const paidRet = new Float64Array(Math.max(maxPaidMonths, 0));
-  if(maxPaidMonths > 0){
-    paidRet[0] = 1;
-    for(let m=1; m<maxPaidMonths; m++){
-      paidRet[m] = paidRet[m-1] * (1 - (m<=3 ? p.eChurn : p.sChurn));
+  // ────────────────────────────────────────────────────────────────────────
+  // STEP 5: LTV, CAC, LTV:CAC  (all discounted at WACC)
+  //
+  //   CAC  = PV of all free COGS we pay (free phase for everyone +
+  //          ongoing free for non-converters)
+  //   LTV  = PV of paid profit from converters
+  // ────────────────────────────────────────────────────────────────────────
+  const disc=Math.pow(1+p.wacc,1/12);
+  let cacPV=0, ltvPV=0;
+  for(let m=0;m<HORIZON;m++){
+    const d=Math.pow(disc,m);
+    if(m<p.ttc){
+      cacPV += freeCogs/d;
+    } else {
+      const k=m-p.ttc;
+      cacPV += (1-p.up)*freeCogs/d;               // non-converters still on free
+      ltvPV += p.up*ret[k]*paid(k).margin/d;       // converted paid profit
     }
   }
+  const netLtv=ltvPV-cacPV;
+  const ratio=cacPV>0?ltvPV/cacPV:Infinity;
 
-  // CAC: total free tier cost until conversion (discounted)
-  let cacPV = 0;
-  for(let m=0; m<p.ttc && m<HORIZON; m++){
-    cacPV += freeCogsMo / Math.pow(monthlyDiscount, m);
-  }
+  // LTV of a single converted user (for display)
+  let ltvConv=0;
+  for(let k=0;k<postMo;k++) ltvConv+=ret[k]*paid(k).margin/Math.pow(disc,p.ttc+k);
 
-  // LTV of a converted user (discounted from conversion month onward)
-  let ltvConv = 0;
-  for(let m=0; m<maxPaidMonths; m++){
-    ltvConv += paidRet[m] * econAt(m).margin / Math.pow(monthlyDiscount, p.ttc + m);
-  }
+  // ────────────────────────────────────────────────────────────────────────
+  // STEP 6: Cumulative NPV per user
+  // ────────────────────────────────────────────────────────────────────────
+  const cum=new Float64Array(HORIZON);
+  cum[0]=net[0]/Math.pow(disc,0);
+  for(let m=1;m<HORIZON;m++) cum[m]=cum[m-1]+net[m]/Math.pow(disc,m);
 
-  // Expected LTV per free user = upsell% * ltvConv
-  const eLtv = p.upsell * ltvConv;
-  const netLtv = eLtv - cacPV;
-  const ltvCac = cacPV > 0 ? eLtv / cacPV : Infinity;
-
-  // ── Series for charts ──────────────────────────────────────────────────
-
-  // Chart 1: Monthly Rev / Cost / Net per user (expected value)
-  const revMo  = new Float64Array(HORIZON);
-  const costMo = new Float64Array(HORIZON);
-  const netMo  = new Float64Array(HORIZON);
-
-  // Free phase: 100% on free, ~$0 revenue, COGS = freeCogsMo
-  for(let m=0; m<p.ttc && m<HORIZON; m++){
-    revMo[m]  = 0;
-    costMo[m] = freeCogsMo;
-    netMo[m]  = -freeCogsMo;
-  }
-  // Post-conversion: upsell% * retention * paid economics
-  for(let m=0; m<maxPaidMonths && p.ttc+m<HORIZON; m++){
-    const prob = p.upsell * paidRet[m];
-    const ec = econAt(m);
-    // Still serving (1-upsell)% on free tier too
-    const freeUsersLeft = 1 - p.upsell;
-    revMo[p.ttc+m]  = prob * ec.arpu;
-    costMo[p.ttc+m] = prob * ec.cost + freeUsersLeft * freeCogsMo;
-    netMo[p.ttc+m]  = prob * ec.margin - freeUsersLeft * freeCogsMo;
-  }
-
-  // Cumulative LTV (discounted)
-  const cumLtv = new Float64Array(HORIZON);
-  cumLtv[0] = netMo[0] / Math.pow(monthlyDiscount, 0);
-  for(let m=1; m<HORIZON; m++){
-    cumLtv[m] = cumLtv[m-1] + netMo[m] / Math.pow(monthlyDiscount, m);
-  }
-
-  // Chart 4: cohort status (% of original free users)
-  const cohortPct = new Float64Array(HORIZON);
-  for(let m=0; m<p.ttc && m<HORIZON; m++) cohortPct[m] = 100; // all on free
-  for(let m=0; m<maxPaidMonths && p.ttc+m<HORIZON; m++){
-    cohortPct[p.ttc+m] = p.upsell * paidRet[m] * 100;
-  }
-
-  // Chart 1 alt: per RETAINED paid user (not probability weighted)
-  const retRevMo  = new Float64Array(HORIZON);
-  const retCostMo = new Float64Array(HORIZON);
-  const retNetMo  = new Float64Array(HORIZON);
-  for(let m=0; m<p.ttc && m<HORIZON; m++){
-    retRevMo[m]  = 0;
-    retCostMo[m] = freeCogsMo;
-    retNetMo[m]  = -freeCogsMo;
-  }
-  for(let m=0; m<maxPaidMonths && p.ttc+m<HORIZON; m++){
-    const ec = econAt(m);
-    retRevMo[p.ttc+m]  = ec.arpu;
-    retCostMo[p.ttc+m] = ec.cost;
-    retNetMo[p.ttc+m]  = ec.margin;
+  // ────────────────────────────────────────────────────────────────────────
+  // STEP 7: Cohort chart — % of original users "active"
+  //   Free phase: 100%
+  //   Post-conversion: drops to upsell%, then upsell% * retention decay
+  // ────────────────────────────────────────────────────────────────────────
+  const cohort=new Float64Array(HORIZON);
+  for(let m=0;m<HORIZON;m++){
+    if(m<p.ttc) cohort[m]=100;
+    else cohort[m]=p.up*ret[m-p.ttc]*100;
   }
 
   // Break-even
-  let breakEven = null;
-  for(let m=0; m<HORIZON; m++){ if(cumLtv[m]>=0){breakEven=m+1;break;} }
+  let be=null;
+  for(let m=0;m<HORIZON;m++){if(cum[m]>=0){be=m+1;break;}}
 
   return {
-    arpu: e0.arpu, margin: e0.margin, costToServe: e0.cost, freeCogsMo,
-    cacPV, eLtv, netLtv, ltvCac, ltvConv, breakEven,
-    totalProfit: cumLtv[HORIZON-1],
-    paidRet:    Array.from(paidRet),
-    revMo:      Array.from(revMo),
-    costMo:     Array.from(costMo),
-    netMo:      Array.from(netMo),
-    retNetMo:   Array.from(retNetMo),
-    cohortPct:  Array.from(cohortPct),
-    cumLtv:     Array.from(cumLtv),
+    freeCogs,arpu:p0.arpu,margin:p0.margin,costServe:p0.cost,
+    cacPV,ltvPV,netLtv,ratio,ltvConv,be,
+    rev:Array.from(rev),cost:Array.from(cost),net:Array.from(net),
+    cum:Array.from(cum),cohort:Array.from(cohort),ret:Array.from(ret),
   };
 }
 
 // ── Charts ───────────────────────────────────────────────────────────────
-const baseOpts = yFmt => ({
-  responsive:true, maintainAspectRatio:false,
-  animation:{duration:120},
+const bo=yf=>({
+  responsive:true,maintainAspectRatio:false,animation:{duration:120},
   plugins:{legend:{display:false}},
   scales:{
     x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8B949E',font:{size:9},maxTicksLimit:20}},
-    y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8B949E',font:{size:9},callback:yFmt||undefined}},
+    y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8B949E',font:{size:9},callback:yf||undefined}},
   },
 });
-const $$ = v=>'$'+v.toLocaleString('en-US',{maximumFractionDigits:2});
-const pp = v=>v.toFixed(0)+'%';
+const df=v=>'$'+v.toLocaleString('en-US',{maximumFractionDigits:2});
+const pf=v=>v.toFixed(0)+'%';
+let c1,c2,c3,c4,c5;
 
-let ch1,ch2,ch3,ch4,ch5;
+function initC(){
+  c1=new Chart($('c1'),{type:'bar',data:{labels:[],datasets:[
+    {label:'Revenue',data:[],backgroundColor:'rgba(121,217,185,0.55)',stack:'s',order:2,barPercentage:.7},
+    {label:'Cost',data:[],backgroundColor:'rgba(253,113,175,0.55)',stack:'s',order:2,barPercentage:.7},
+    {label:'Net',data:[],type:'line',borderColor:'#7B68EE',backgroundColor:'transparent',borderWidth:2,pointRadius:0,tension:.3,order:1},
+  ]},options:{...bo(df),plugins:{legend:{display:true,labels:{color:'#8B949E',font:{size:10},boxWidth:10,padding:10}}},scales:{x:{...bo(df).scales.x,stacked:true},y:{...bo(df).scales.y,stacked:true}}}});
 
-function initCharts(){
-  ch1 = new Chart($('c1'),{
-    type:'bar',
-    data:{labels:[],datasets:[
-      {label:'Revenue',data:[],backgroundColor:'rgba(121,217,185,0.55)',stack:'s',order:2,barPercentage:.7},
-      {label:'Cost',   data:[],backgroundColor:'rgba(253,113,175,0.55)',stack:'s',order:2,barPercentage:.7},
-      {label:'Net',    data:[],type:'line',borderColor:'#7B68EE',backgroundColor:'transparent',borderWidth:2,pointRadius:0,tension:.3,order:1},
-    ]},
-    options:{
-      ...baseOpts($$),
-      plugins:{legend:{display:true,labels:{color:'#8B949E',font:{size:10},boxWidth:10,padding:10}}},
-      scales:{x:{...baseOpts($$).scales.x,stacked:true},y:{...baseOpts($$).scales.y,stacked:true}},
-    },
-  });
-  ch2 = new Chart($('c2'),{
-    type:'line',
-    data:{labels:[],datasets:[{data:[],fill:true,borderColor:'#7B68EE',backgroundColor:'rgba(123,104,238,0.10)',borderWidth:2,pointRadius:0,tension:.3}]},
-    options:{...baseOpts(pp),scales:{...baseOpts(pp).scales,y:{...baseOpts(pp).scales.y,min:0,max:100}}},
-  });
-  ch3 = new Chart($('c3'),{
-    type:'bar',
-    data:{labels:[],datasets:[{data:[],backgroundColor:[]}]},
-    options:baseOpts($$),
-  });
-  ch4 = new Chart($('c4'),{
-    type:'line',
-    data:{labels:[],datasets:[{data:[],fill:true,borderColor:'#49CCF9',backgroundColor:'rgba(73,204,249,0.10)',borderWidth:2,pointRadius:0,tension:.3}]},
-    options:{...baseOpts(pp),scales:{...baseOpts(pp).scales,y:{...baseOpts(pp).scales.y,min:0}}},
-  });
-  ch5 = new Chart($('c5'),{
-    type:'bar',
-    data:{labels:[],datasets:[
-      {label:'Downside',data:[],backgroundColor:'rgba(253,113,175,0.6)',barPercentage:.5},
-      {label:'Upside',  data:[],backgroundColor:'rgba(121,217,185,0.6)',barPercentage:.5},
-    ]},
-    options:{
-      indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:{duration:120},
-      plugins:{
-        legend:{display:true,labels:{color:'#8B949E',font:{size:10},boxWidth:10,padding:10}},
-        tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+f2(ctx.raw)+'x'}},
-      },
-      scales:{
-        x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8B949E',font:{size:9},callback:v=>f2(v)+'x'}},
-        y:{grid:{display:false},ticks:{color:'#E6EDF3',font:{size:11}}},
-      },
-    },
-  });
+  c2=new Chart($('c2'),{type:'line',data:{labels:[],datasets:[{data:[],fill:true,borderColor:'#49CCF9',backgroundColor:'rgba(73,204,249,0.10)',borderWidth:2,pointRadius:0,tension:.1}]},options:{...bo(pf),scales:{...bo(pf).scales,y:{...bo(pf).scales.y,min:0}}}});
+
+  c3=new Chart($('c3'),{type:'line',data:{labels:[],datasets:[{data:[],fill:true,borderColor:'#7B68EE',backgroundColor:'rgba(123,104,238,0.10)',borderWidth:2,pointRadius:0,tension:.3}]},options:{...bo(pf),scales:{...bo(pf).scales,y:{...bo(pf).scales.y,min:0,max:100}}}});
+
+  c4=new Chart($('c4'),{type:'bar',data:{labels:[],datasets:[{data:[],backgroundColor:[]}]},options:bo(df)});
+
+  c5=new Chart($('c5'),{type:'bar',data:{labels:[],datasets:[
+    {label:'Downside',data:[],backgroundColor:'rgba(253,113,175,0.6)',barPercentage:.5},
+    {label:'Upside',data:[],backgroundColor:'rgba(121,217,185,0.6)',barPercentage:.5},
+  ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:{duration:120},plugins:{legend:{display:true,labels:{color:'#8B949E',font:{size:10},boxWidth:10,padding:10}},tooltip:{callbacks:{label:ctx=>ctx.dataset.label+': '+f2(ctx.raw)+'x'}}},scales:{x:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#8B949E',font:{size:9},callback:v=>f2(v)+'x'}},y:{grid:{display:false},ticks:{color:'#E6EDF3',font:{size:11}}}}}});
 }
 
-function updateCharts(r,p){
-  const mo = Array.from({length:HORIZON},(_,i)=>i+1);
+function updateC(r,p){
+  const mo=Array.from({length:HORIZON},(_,i)=>i+1);
+  c1.data.labels=mo;
+  c1.data.datasets[0].data=r.rev;
+  c1.data.datasets[1].data=r.cost.map(v=>-v);
+  c1.data.datasets[2].data=r.net;
+  c1.update();
 
-  ch1.data.labels = mo;
-  ch1.data.datasets[0].data = r.revMo;
-  ch1.data.datasets[1].data = r.costMo.map(v=>-v);
-  ch1.data.datasets[2].data = r.netMo;
-  ch1.update();
+  c2.data.labels=mo;
+  c2.data.datasets[0].data=r.cohort;
+  c2.update();
 
-  const postMo = Array.from({length:r.paidRet.length},(_,i)=>i+1);
-  ch2.data.labels = postMo;
-  ch2.data.datasets[0].data = r.paidRet.map(v=>v*100);
-  ch2.update();
+  const pm=Array.from({length:r.ret.length},(_,i)=>i+1);
+  c3.data.labels=pm;
+  c3.data.datasets[0].data=r.ret.map(v=>v*100);
+  c3.update();
 
-  ch3.data.labels = mo;
-  ch3.data.datasets[0].data = r.cumLtv;
-  ch3.data.datasets[0].backgroundColor = r.cumLtv.map(v=>v<0?'#FD71AF':'#79D9B9');
-  ch3.update();
-
-  ch4.data.labels = mo;
-  ch4.data.datasets[0].data = r.cohortPct;
-  ch4.update();
+  c4.data.labels=mo;
+  c4.data.datasets[0].data=r.cum;
+  c4.data.datasets[0].backgroundColor=r.cum.map(v=>v<0?'#FD71AF':'#79D9B9');
+  c4.update();
 
   // Tornado
-  const base = r.ltvCac;
-  const cap = v => isFinite(v)?v:50;
-  const levers = [
-    {label:'Upsell Rate',       key:'upsellRate', unit:'%'},
-    {label:'Time to Convert',   key:'ttc',        unit:'mo'},
-    {label:'% Used of Entitlement', key:'pctUsed', unit:'%'},
+  const base=r.ratio, cap=v=>isFinite(v)?v:50;
+  const levers=[
+    {l:'Upsell Rate',key:'upsell',u:'%'},
+    {l:'Months to Convert',key:'ttc',u:'mo'},
+    {l:'% Used of Entitlement',key:'pctUsed',u:'%'},
   ];
-  const labels=[],downs=[],ups=[],notes=[];
+  const lb=[],dn=[],up=[],nt=[];
   for(const lv of levers){
-    const el = $(lv.key);
-    const orig = +el.value;
-    const lo = Math.max(+el.min, orig*0.5);
-    const hi = Math.min(+el.max, orig*1.5);
-    el.value = lo; const rLo = runModel(readInputs());
-    el.value = hi; const rHi = runModel(readInputs());
-    el.value = orig;
-    const loV = cap(rLo.ltvCac), hiV = cap(rHi.ltvCac);
-    const low = Math.min(loV,hiV), high = Math.max(loV,hiV);
-    labels.push(lv.label);
-    downs.push(low-cap(base));
-    ups.push(high-cap(base));
-    const pDn = ((Math.min(loV,hiV)-cap(base))/cap(base))*100;
-    const pUp = ((Math.max(loV,hiV)-cap(base))/cap(base))*100;
-    const fL = lv.unit==='$'?'$'+f2(lo):lv.unit==='mo'?f0(Math.round(lo))+' mo':f2(lo)+'%';
-    const fH = lv.unit==='$'?'$'+f2(hi):lv.unit==='mo'?f0(Math.round(hi))+' mo':f2(hi)+'%';
-    notes.push(
-      '<span style="color:var(--text);font-weight:600">'+lv.label+'</span>: '+
-      'At '+fL+' &rarr; '+f2(low)+'x (<span style="color:'+(pDn<0?'var(--pink)':'var(--teal)')+'">'+(pDn>=0?'+':'')+f0(Math.round(pDn))+'%</span>). '+
-      'At '+fH+' &rarr; '+f2(high)+'x (<span style="color:'+(pUp<0?'var(--pink)':'var(--teal)')+'">'+(pUp>=0?'+':'')+f0(Math.round(pUp))+'%</span>).'
-    );
+    const el=$(lv.key),orig=+el.value;
+    const lo=Math.max(+el.min,orig*0.5),hi=Math.min(+el.max,orig*1.5);
+    el.value=lo;const rL=model(inputs());
+    el.value=hi;const rH=model(inputs());
+    el.value=orig;
+    const lV=cap(rL.ratio),hV=cap(rH.ratio),bV=cap(base);
+    lb.push(lv.l);
+    dn.push(Math.min(lV,hV)-bV);
+    up.push(Math.max(lV,hV)-bV);
+    const pD=((Math.min(lV,hV)-bV)/bV*100),pU=((Math.max(lV,hV)-bV)/bV*100);
+    const fL=lv.u==='$'?'$'+f2(lo):lv.u==='mo'?f0(Math.round(lo))+' mo':f2(lo)+'%';
+    const fH=lv.u==='$'?'$'+f2(hi):lv.u==='mo'?f0(Math.round(hi))+' mo':f2(hi)+'%';
+    nt.push('<span style="color:var(--text);font-weight:600">'+lv.l+'</span>: At '+fL+' &rarr; '+f2(Math.min(lV,hV))+'x (<span style="color:'+(pD<0?'var(--pink)':'var(--teal)')+'">'+(pD>=0?'+':'')+f0(Math.round(pD))+'%</span>). At '+fH+' &rarr; '+f2(Math.max(lV,hV))+'x (<span style="color:'+(pU<0?'var(--pink)':'var(--teal)')+'">'+(pU>=0?'+':'')+f0(Math.round(pU))+'%</span>).');
   }
-  const idx = [0,1,2].sort((a,b)=>(ups[b]-downs[b])-(ups[a]-downs[a]));
-  ch5.data.labels = idx.map(i=>labels[i]);
-  ch5.data.datasets[0].data = idx.map(i=>downs[i]);
-  ch5.data.datasets[1].data = idx.map(i=>ups[i]);
-  ch5.update();
-  $('tornadoNotes').innerHTML = idx.map(i=>notes[i]).join('<br>');
+  const ix=[0,1,2].sort((a,b)=>(up[b]-dn[b])-(up[a]-dn[a]));
+  c5.data.labels=ix.map(i=>lb[i]);
+  c5.data.datasets[0].data=ix.map(i=>dn[i]);
+  c5.data.datasets[1].data=ix.map(i=>up[i]);
+  c5.update();
+  $('tNotes').innerHTML=ix.map(i=>nt[i]).join('<br>');
 }
 
-// ── UI ───────────────────────────────────────────────────────────────────
 function updateUI(r,p){
-  $('kLtv').textContent = '$'+f2(r.eLtv);
-  $('kLtv').style.color = r.eLtv>=0?'var(--teal)':'var(--pink)';
-  $('kLtvS').textContent = 'expected paid LTV per free user';
+  $('kL').textContent='$'+f2(r.ltvPV);$('kL').style.color='var(--teal)';
+  $('kLS').textContent='PV of paid profit per free user';
+  $('kC').textContent='$'+f2(r.cacPV);$('kC').style.color='var(--pink)';
+  $('kCS').textContent='PV of all free COGS incurred';
+  if(!isFinite(r.ratio)){$('kR').textContent='\u221E';$('kR').style.color='var(--green)';$('kRS').textContent='no cost';}
+  else{$('kR').textContent=f2(r.ratio)+'x';$('kR').style.color=r.ratio>=3?'var(--green)':r.ratio>=1?'var(--yellow)':'var(--red)';$('kRS').textContent=r.ratio>=3?'strong':r.ratio>=1?'marginal':'negative';}
 
-  $('kCac').textContent = '$'+f2(r.cacPV);
-  $('kCac').style.color = 'var(--pink)';
-  $('kCacS').textContent = p.ttc+' months of free COGS (discounted)';
+  $('rFC').textContent='$'+f2(r.freeCogs)+'/mo';
+  $('rA').textContent='$'+f2(r.arpu)+'/mo';
+  $('rM').textContent='$'+f2(r.margin)+'/mo';
 
-  if(!isFinite(r.ltvCac)){
-    $('kR').textContent='\u221E'; $('kR').style.color='var(--green)'; $('kRS').textContent='no cost';
-  } else {
-    $('kR').textContent=f2(r.ltvCac)+'x';
-    $('kR').style.color = r.ltvCac>=3?'var(--green)':r.ltvCac>=1?'var(--yellow)':'var(--red)';
-    $('kRS').textContent = r.ltvCac>=3?'strong':r.ltvCac>=1?'marginal':'negative';
-  }
-
-  $('rFreeCogs').textContent = '$'+f2(r.freeCogsMo)+'/mo';
-  $('rArpu').textContent     = '$'+f2(r.arpu)+'/mo';
-  $('rMargin').textContent   = '$'+f2(r.margin)+'/mo';
-
-  const rows = [
-    ['Free Entitlement',         '$'+f2(p.entitlement)+'/mo'],
-    ['% Used of Entitlement',    f0(p.pctUsed*100)+'%'],
-    ['Free COGS / Mo',           '$'+f2(r.freeCogsMo)],
-    ['Avg Time to Convert',      p.ttc+' months'],
-    ['Upsell Rate',              f2(p.upsell*100)+'%'],
+  const totalFreeCost=p.ttc*r.freeCogs;
+  const rows=[
+    ['Free Entitlement','$'+f2(p.ent)+'/mo'],
+    ['% Used','$'+f0(p.used*100)+'% &rarr; $'+f2(r.freeCogs)+'/mo COGS'],
+    ['Months to Convert',p.ttc],
+    ['Upsell Rate',f2(p.up*100)+'%'],
+    ['Total Free Cost (undiscounted)','$'+f2(totalFreeCost)],
     ['',''],
-    ['Paid ARPU',                '$'+f2(r.arpu)+'/mo'],
-    ['Breakage',                 f0(p.breakage*100)+'%'],
-    ['Avg COGS % of Revenue',    f0(p.cogsPct*100)+'%'],
-    ['Paid Margin / Mo',         '$'+f2(r.margin)+'/mo'],
-    ['LTV if Converted',         '$'+f2(r.ltvConv)],
+    ['Paid ARPU','$'+f2(r.arpu)+'/mo'],
+    ['Breakage',f0(p.brk*100)+'%'],
+    ['COGS % of Revenue',f0(p.cogs*100)+'%'],
+    ['Paid Margin / Mo','$'+f2(r.margin)+'/mo'],
+    ['LTV if Converted (PV)','$'+f2(r.ltvConv)],
     ['',''],
-    ['CAC (free cost, PV)',      '$'+f2(r.cacPV)],
-    ['Expected LTV / Free User', '$'+f2(r.eLtv)],
-    ['Net LTV (LTV - CAC)',      '$'+f2(r.netLtv)],
-    ['LTV : CAC',                isFinite(r.ltvCac)?f2(r.ltvCac)+'x':'N/A'],
-    ['Break-Even Month',         r.breakEven?'Month '+r.breakEven:'Never'],
-    ['5-Year Net / User',        '$'+f2(r.totalProfit)],
+    ['CAC (PV of free COGS)','$'+f2(r.cacPV)],
+    ['LTV (PV of paid profit)','$'+f2(r.ltvPV)],
+    ['Net (LTV - CAC)','$'+f2(r.netLtv)],
+    ['LTV : CAC',isFinite(r.ratio)?f2(r.ratio)+'x':'N/A'],
+    ['Break-Even Month',r.be?'Month '+r.be:'Never'],
   ];
-  $('tBody').innerHTML = rows.map(([l,v])=>
-    l===''?'<tr class="sep"><td colspan="2"></td></tr>'
-          :'<tr><td>'+l+'</td><td>'+v+'</td></tr>'
-  ).join('');
+  $('tB').innerHTML=rows.map(([l,v])=>l===''?'<tr class="sep"><td colspan="2"></td></tr>':'<tr><td>'+l+'</td><td>'+v+'</td></tr>').join('');
 
-  // Key Takeaways
-  const ins = [];
-  const retAt12 = r.paidRet.length>11?r.paidRet[11]:0;
-  const retAt36 = r.paidRet.length>35?r.paidRet[35]:0;
-  const totalFreeCost = p.ttc * r.freeCogsMo;
+  const ins=[];
+  const r12=r.ret.length>11?r.ret[11]:0, r36=r.ret.length>35?r.ret[35]:0;
+  if(r.netLtv<0) ins.push('The free tier loses $'+f2(Math.abs(r.netLtv))+' per user over 5 years. '+p.ttc+' months of free COGS at $'+f2(r.freeCogs)+'/mo ($'+f2(totalFreeCost)+' total) isn\'t recovered by the '+f2(p.up*100)+'% who convert. <strong>Upsell rate</strong> and <strong>time to convert</strong> are the biggest levers.');
+  else if(r.ratio<3) ins.push('Marginal at '+f2(r.ratio)+'x. The '+p.ttc+'-month free runway costs $'+f2(r.cacPV)+' (PV) per user. Shortening time-to-convert or boosting upsell above '+f2(p.up*100*1.5)+'% would strengthen the case.');
+  else ins.push('Strong at '+f2(r.ratio)+'x. '+f2(p.up*100)+'% upsell at month '+p.ttc+' generates $'+f2(r.ltvPV)+' in paid profit against $'+f2(r.cacPV)+' in free COGS.');
 
-  if(r.netLtv < 0){
-    ins.push('At '+p.ttc+' months of free usage costing $'+f2(r.freeCogsMo)+'/mo and only '+f2(p.upsell*100)+'% converting, the free tier loses $'+f2(Math.abs(r.netLtv))+' per user. <strong>Shortening time-to-convert</strong> and <strong>increasing upsell rate</strong> are the two biggest levers.');
-  } else if(r.ltvCac < 3){
-    ins.push('Marginal at '+f2(r.ltvCac)+'x. The '+p.ttc+'-month free runway costs $'+f2(totalFreeCost)+' per user (undiscounted). Cutting conversion time or boosting upsell rate above '+f2(p.upsell*100*1.5)+'% would push this into strong territory.');
-  } else {
-    ins.push('Strong economics at '+f2(r.ltvCac)+'x. The '+f2(p.upsell*100)+'% upsell rate at month '+p.ttc+' generates $'+f2(r.eLtv)+' in expected paid LTV against $'+f2(r.cacPV)+' of free tier investment.');
-  }
+  ins.push('Free users cost $'+f2(r.freeCogs)+'/mo ('+f0(p.used*100)+'% of $'+f2(p.ent)+' entitlement) with $0 revenue for '+p.ttc+' months. Post-conversion, '+f0(Math.round(r12*100))+'% of converters survive to month 12, '+f0(Math.round(r36*100))+'% to month 36.');
 
-  ins.push('The free tier costs $'+f2(r.freeCogsMo)+'/mo per user ('+f0(p.pctUsed*100)+'% of $'+f2(p.entitlement)+' entitlement) with zero revenue for '+p.ttc+' months. Post-conversion, '+f0(Math.round(retAt12*100))+'% survive to month 12 and '+f0(Math.round(retAt36*100))+'% to month 36.');
+  const yr5m=r.ret.length>0?paid(r.ret.length-1).margin:r.margin;
+  function paid(k){const or=Math.min(p.ovr*Math.pow(Math.pow(1+p.ovg,1/12),k),0.95),oa=p.ova*Math.pow(Math.pow(1+p.ovg,1/12),k);let a=0,mg=0;const s=[[p.pm*(1-or),p.pp],[p.pm*or,p.pp+oa],[p.ppm*(1-or),p.ppp],[p.ppm*or,p.ppp+oa]];for(const[w,sp]of s){a+=w*sp;mg+=w*(1-p.cogs)*sp;}return{margin:p.brk*a+(1-p.brk)*mg};}
+  if(p.ovg>0) ins.push('Overage growth ('+f0(p.ovg*100)+'%/yr) lifts paid margin from $'+f2(r.margin)+'/mo at conversion to $'+f2(yr5m.margin)+'/mo by end of horizon. Deeper free-tier engagement primes this flywheel.');
+  else ins.push('No overage growth. Margin stays flat at $'+f2(r.margin)+'/mo.');
 
-  const yr5margin = r.retNetMo[r.retNetMo.length-1];
-  if(p.ovGrowth > 0){
-    ins.push('Overage growth ('+f0(p.ovGrowth*100)+'%/yr) lifts paid margin from $'+f2(r.margin)+'/mo at conversion to $'+f2(yr5margin)+'/mo by year 5. Deeper free-tier engagement primes the overage flywheel post-conversion.');
-  } else {
-    ins.push('No overage growth assumed. Margin stays flat at $'+f2(r.margin)+'/mo. Driving product adoption on the free tier could prime users for overage once paid.');
-  }
-
-  $('insightsList').innerHTML = ins.map(t=>'<li style="margin-bottom:4px">'+t+'</li>').join('');
+  $('insUl').innerHTML=ins.map(t=>'<li style="margin-bottom:4px">'+t+'</li>').join('');
 }
 
 function sync(){
-  $('dEnt').textContent     = '$'+f2(+$('entitlement').value)+'/mo';
-  $('dUsed').textContent    = $('pctUsed').value+'%';
-  $('dWacc').textContent    = $('wacc').value+'%';
-  $('dTTC').textContent     = $('ttc').value+' mo';
-  $('dUpsell').textContent  = $('upsellRate').value+'%';
-  $('dPro').textContent     = '$'+f0(+$('proPrice').value)+'/mo';
-  $('dPP').textContent      = '$'+f0(+$('ppPrice').value)+'/mo';
-  $('dMix').textContent     = $('proMix').value+'%';
-  $('dOvR').textContent     = $('ovRate').value+'%';
-  $('dOvA').textContent     = '$'+f0(+$('ovAmt').value)+'/mo';
-  $('dOvG').textContent     = $('ovGrowth').value+'%/yr';
-  $('dBrk').textContent     = $('breakage').value+'%';
-  $('dCogsPct').textContent = $('cogsPct').value+'%';
-  $('dEC').textContent      = $('eChurn').value+'%';
-  $('dSC').textContent      = $('sChurn').value+'%';
+  $('dEnt').textContent='$'+f2(+$('entitlement').value)+'/mo';
+  $('dUsed').textContent=$('pctUsed').value+'%';
+  $('dTTC').textContent=$('ttc').value+' mo';
+  $('dUp').textContent=$('upsell').value+'%';
+  $('dW').textContent=$('wacc').value+'%';
+  $('dPro').textContent='$'+f0(+$('proPrice').value)+'/mo';
+  $('dPP').textContent='$'+f0(+$('ppPrice').value)+'/mo';
+  $('dMix').textContent=$('proMix').value+'%';
+  $('dOvR').textContent=$('ovRate').value+'%';
+  $('dOvA').textContent='$'+f0(+$('ovAmt').value)+'/mo';
+  $('dOvG').textContent=$('ovGrowth').value+'%/yr';
+  $('dBrk').textContent=$('breakage').value+'%';
+  $('dCp').textContent=$('cogsPct').value+'%';
+  $('dEC').textContent=$('eChurn').value+'%';
+  $('dSC').textContent=$('sChurn').value+'%';
 }
 
-function recalc(){
-  sync();
-  const p = readInputs();
-  const r = runModel(p);
-  updateUI(r,p);
-  updateCharts(r,p);
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  initCharts();
-  document.querySelectorAll('input[type="range"]').forEach(el=>el.addEventListener('input',recalc));
-  recalc();
-});
+function go(){sync();const p=inputs(),r=model(p);updateUI(r,p);updateC(r,p);}
+document.addEventListener('DOMContentLoaded',()=>{initC();document.querySelectorAll('input[type="range"]').forEach(el=>el.addEventListener('input',go));go();});
 </script>
 </body>
 </html>
