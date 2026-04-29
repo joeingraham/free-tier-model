@@ -482,8 +482,15 @@ function sync(){
   $('dSC').textContent=$('sChurn').value+'%';
 }
 
-function go(){sync();const p=inputs(),r=model(p);updateUI(r,p);updateC(r,p);}
-document.addEventListener('DOMContentLoaded',()=>{initC();document.querySelectorAll('input[type="range"]').forEach(el=>el.addEventListener('input',go));go();});
+function go(){
+  try{sync();const p=inputs(),r=model(p);updateUI(r,p);updateC(r,p);}
+  catch(e){document.title='ERR:'+e.message;console.error(e);}
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  try{initC();}catch(e){document.title='INIT:'+e.message;console.error(e);}
+  document.querySelectorAll('input[type="range"]').forEach(el=>el.addEventListener('input',go));
+  go();
+});
 </script>
 </body>
 </html>
