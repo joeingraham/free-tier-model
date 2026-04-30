@@ -376,10 +376,11 @@ function runModel(p) {
     if (m < p.ttc) {
       expNet.push(-freeCogs);
     } else {
+      // Post-conversion: only paid profit from converters, no more free COGS
       var k = m - p.ttc;
       var ec = paidEcon(k);
       var surv = retention[k];
-      expNet.push(p.upsell * surv * ec.margin - freeCogs);
+      expNet.push(p.upsell * surv * ec.margin);
     }
   }
 
